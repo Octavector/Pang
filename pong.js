@@ -18,8 +18,18 @@ window.onload = function(){
     requestAnimationFrame(repeatOften);
 
     //Create player object to hold player properties
-    var playerA = {x:0+padding.horizontal, y:(gameSize.height/2)-(paddleSize.height/2), up:false, down:false};
-    var playerB = {x:gameSize.width-padding.horizontal, y:(gameSize.height/2)-(paddleSize.height/2), up:false, down:false};
+    var playerA = {
+        x:0+padding.horizontal,
+        y:(gameSize.height/2)-(paddleSize.height/2),
+        up:false,
+        down:false
+    };
+    var playerB = {
+        x:gameSize.width-padding.horizontal,
+        y:(gameSize.height/2)-(paddleSize.height/2),
+        up:false,
+        down:false
+    };
 
 
     function movePaddles(){
