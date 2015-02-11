@@ -3,6 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>Pong 9000</title>
+
+        <style type="text/css">
+        #pong {
+            position: relative;
+        }
+        #game {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        </style>
     </head>
 
     <body>
@@ -10,8 +21,11 @@
         <h2>Controls</h2>
         <p><b>Player A</b> UP: <strong>W</strong> | DOWN: <strong>S</strong></p>
         <p><b>Player B</b> UP: <strong>&uarr;</strong> | DOWN: <strong>&darr;</strong></p>
-        <canvas id="canvas" width="700px" height="450px;">
-        </canvas>
+
+        <div id="pong">
+            <canvas id="board" width="700px" height="450px;"></canvas>
+            <canvas id="game" width="700px" height="450px;"></canvas>
+        </div>
 
         <script src="pong.js"></script>
     </body>
