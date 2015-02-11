@@ -21,7 +21,7 @@ window.onload = function(){
 
 
 
-    //Fetch canvas and get 2d context for drawing
+    // Fetch canvas and get 2d context for drawing
     var board = document.getElementById("board");
     var game = document.getElementById("game");
 
@@ -29,9 +29,11 @@ window.onload = function(){
     var gameContext = game.getContext("2d");
 
     var gameSize = { width: 700, height: 450 };
+    var padding = { horizontal: 40, vertical: 20 };
+
     var paddleSize = { width: 10, height: 100 };
     var ballSize = { width: 10, height: 10 }
-    var padding = { horizontal: 40, vertical: 20 };
+
 
 
     // Create Board
@@ -44,7 +46,7 @@ window.onload = function(){
     boardContext.dashedLine(gameSize.width/2, 0, gameSize.width/2, gameSize.height, gameSize.height/41);
     boardContext.stroke();
 
-    //Game loop. repeatOften function is called continuously with requestAnimationFrame
+    // Game loop. repeatOften function is called continuously with requestAnimationFrame
     function repeatOften(){
         prepareDrawing();
         movePaddles();
@@ -52,29 +54,46 @@ window.onload = function(){
         requestAnimationFrame(repeatOften);
     }
 
-    //Begin game loop
+    // Begin game loop
     requestAnimationFrame(repeatOften);
 
-    //Create player object to hold player properties
+
+    // Initialising Variables
+    //=======================================================================
+
+    // Create game boundaries
+    var gameBounds = {
+        x1: padding.horizontal,
+        y1: padding.vertical,
+        x2: gameSize.width - padding.horizontal,
+        y2: gameSize.height - padding.vertical
+    }
+
+    // Create player objects to hold player properties
     var playerA = {
-        x:0+padding.horizontal,
-        y:(gameSize.height/2)-(paddleSize.height/2),
-        up:false,
-        down:false
+        x: gameBounds.x1,
+        y: (gameSize.height/2)-(paddleSize.height/2),
+        up: false,
+        down: false
     };
     var playerB = {
-        x:gameSize.width-padding.horizontal,
-        y:(gameSize.height/2)-(paddleSize.height/2),
-        up:false,
-        down:false
+        x: gameBounds.x2,
+        y: (gameSize.height/2)-(paddleSize.height/2),
+        up: false,
+        down: false
     };
 
+    // Create ball object to hold ball properties
     var ball = {
         x: gameSize.width/2,
         y: gameSize.height/2,
-        angle: Math.PI/2,
-        velocity: 5
+        dx: 5,
+        dy: 3
     }
+
+
+    // Drawing Functions
+    //=======================================================================
 
     function prepareDrawing(){
         gameContext.clearRect(0, 0, gameSize.width, gameSize.height);
@@ -87,32 +106,39 @@ window.onload = function(){
         gameContext.fillRect(playerA.x, playerA.y, paddleSize.width, paddleSize.height);
         gameContext.fillRect(playerB.x, playerB.y, paddleSize.width, paddleSize.height);
 
-        //Move player as per keys pressed, prevent from leaving game area
+        // Move player as per keys pressed, prevent from leaving game area
         if(playerA.up && playerA.y > padding.vertical)
             playerA.y -= 5;
-        else if(playerA.down && playerA.y < gameSize.height-padding.vertical-paddleSize.height)
+        else if(playerA.down && playerA.y < gameBounds.y2-paddleSize.height)
             playerA.y += 5;
 
         if(playerB.up && playerB.y > padding.vertical)
             playerB.y -= 5;
-        else if(playerB.down && playerB.y < gameSize.height-padding.vertical-paddleSize.height)
+        else if(playerB.down && playerB.y < gameBounds.y2-padding.vertical-paddleSize.height)
             playerB.y += 5;
     } 
 
     function moveBall(){
-        // Draw player paddles
+        // Draw ball
         gameContext.fillStyle="white";
         gameContext.fillRect(ball.x, ball.y, ballSize.width, ballSize.height);
 
-        ball.x += ball.velocity * Math.sin(ball.angle);
-        ball.y += ball.velocity * Math.cos(ball.angle);
+            if (ball.x >= gameBounds.x2 || ball.x <= 0) {
+                 ball.dx *= -1;   
+            }
+            if (ball.y > gameBounds.y2 || ball.y < 0) {
+                 ball.dy *= -1;   
+            }
+
+        ball.x += ball.dx;
+        ball.y += ball.dy;
     }
 
 
-    //Player Controls
+    // Player Controls
     //=======================================================================
 
-    //keyboard key event detection
+    // keyboard key event detection
     window.addEventListener("keydown",keyControl,false);
     window.addEventListener("keyup",clearKeyControl,false);
 
@@ -124,7 +150,7 @@ window.onload = function(){
         if (e.which == 40) playerB["down"] = true;     //  DOWN
     }
 
-    //On keyup, clear all "up" and "down" properties
+    // On keyup, clear all "up" and "down" properties
     function clearKeyControl(e){
         if (e.which == 87) playerA["up"] = false;       //  W
         if (e.which == 83) playerA["down"] = false;     //  S
